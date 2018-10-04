@@ -182,8 +182,10 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
     }
     private void setMove(char player, int location) {
         if(player==mGame.HUMAN_PLAYER){
+            if(mHumanMediaPlayer!= null)
             mHumanMediaPlayer.start();    // Play the sound effect
         }else {
+            if(mComputerMediaPlayer!= null)
             mComputerMediaPlayer.start();
         }
         mGame.setMove(player, location);
