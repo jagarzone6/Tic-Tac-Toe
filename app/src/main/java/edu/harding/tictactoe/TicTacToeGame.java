@@ -175,6 +175,17 @@ public class TicTacToeGame {
         mBoard[location] = player;
     }
 
+    public char[] getBoardState(){
+        return  mBoard;
+
+    }
+
+
+    public void setBoardState(char[] newBoard){
+        mBoard = newBoard;
+    }
+
+
     /** Return the best move for the computer to make. You must call setMove()
      * to actually make the computer move to that location.
      * @return The best move for the computer to make (0-8).

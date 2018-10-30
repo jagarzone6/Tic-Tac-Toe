@@ -5,7 +5,9 @@
     <string name="difficulty_harder">Harder</string>
     <string name="difficulty_expert">Expert</string>
     <string name="quit_question">Are you sure you want to quit ?</string>
+    <string name="reset_score_question">Are you sure you want to reset scores ?</string>
     <string name="yes">Yes</string>
+    <string name="yes_rs">Yes</string>
     <string name="no">No</string>
 
 </resources>
