@@ -9,5 +9,5 @@
     <string name="yes">Yes</string>
     <string name="yes_rs">Yes</string>
     <string name="no">No</string>
-
+    <string name="result_human_wins">You won!</string>
 </resources>
