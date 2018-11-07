@@ -30,8 +30,8 @@
             android:label="Settings" />
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login">
-        </activity>
+            android:label="@string/title_activity_login"></activity>
+        <activity android:name=".Games_List_Activity"></activity>
     </application>
 
 </manifest>

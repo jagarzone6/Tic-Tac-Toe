@@ -3,6 +3,7 @@ package edu.harding.tictactoe;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
@@ -350,6 +351,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                                 myRef.setValue("Hello, World!");
 
                             } else {
+                                currentUser= null;
                                 // If sign in fails, display a message to the user.
                                 Log.w("LOGIN", "signInWithEmail:failure", task.getException());
                             }
@@ -367,7 +369,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             try {
                 // Simulate network access.
                 Thread.sleep(2000);
-                if(currentUser!= null){
+                if(currentUser != null){
                     return true;
                 }
             } catch (InterruptedException e) {
@@ -383,8 +385,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             showProgress(false);
 
             if (success) {
-                finish();
+                startActivityForResult(new Intent(LoginActivity.this, Games_List_Activity.class), 0);
+
             } else {
+                mEmailView.setError(getString(R.string.error_invalid_email));
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
