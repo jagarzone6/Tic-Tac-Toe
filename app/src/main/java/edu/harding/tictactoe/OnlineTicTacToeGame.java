@@ -10,21 +10,21 @@ import android.view.MotionEvent;
 import android.view.View;
 
 public class OnlineTicTacToeGame extends AppCompatActivity {
-    private BoardView mBoardView;
-    private TicTacToeGame mGame;
+    private OnlineBoardView mBoardView;
+    private OnlineTicTacToeLogic mGame;
     int pos;
     private SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mGame = new TicTacToeGame();
+        mGame = new OnlineTicTacToeLogic();
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_online_tic_tac_toe_game);
-        mBoardView = (BoardView) findViewById(R.id.online_board);
+        mBoardView = (OnlineBoardView) findViewById(R.id.online_board);
         mBoardView.setGame(mGame);
         mBoardView.setOnTouchListener(mTouchListener);
         mBoardView.setColor(mPrefs.getInt("board_color", Color.LTGRAY));

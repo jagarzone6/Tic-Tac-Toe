@@ -34,7 +34,9 @@
         <activity
             android:name=".Games_List_Activity"
             android:label="Play Online" />
-        <activity android:name=".OnlineTicTacToeGame"></activity>
+        <activity android:name=".OnlineTicTacToeGame"
+            android:label="Online Game"
+            ></activity>
     </application>
 
 </manifest>

@@ -9,7 +9,7 @@
     tools:context=".OnlineTicTacToeGame"
     android:padding="25dp">
 
-    <edu.harding.tictactoe.BoardView
+    <edu.harding.tictactoe.OnlineBoardView
         android:id="@+id/online_board"
         android:layout_width="300dp"
         android:layout_height="300dp"
