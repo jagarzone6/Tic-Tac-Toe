@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".AndroidTicTacToeActivity"
-            android:label="AndroidTicTacToeActivity">
+            android:label="Tic Tac Toe">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,7 +31,8 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"></activity>
-        <activity android:name=".Games_List_Activity"></activity>
+        <activity android:name=".Games_List_Activity"
+            android:label="Play Online"></activity>
     </application>
 
 </manifest>

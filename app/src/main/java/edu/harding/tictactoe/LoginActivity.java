@@ -347,8 +347,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d("LOGIN", "signInWithEmail:success");
                                 currentUser = mAuth.getCurrentUser();
-                                DatabaseReference myRef = database.getReference("message");
-                                myRef.setValue("Hello, World!");
+                                DatabaseReference userRef = database.getReference("users");
+                                userRef.child(currentUser.getUid()).child("loginMessage").setValue("Hello, World!");
+
 
                             } else {
                                 currentUser= null;
