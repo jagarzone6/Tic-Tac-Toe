@@ -1,5 +1,7 @@
 package edu.harding.tictactoe.model;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class OnlineGame {
@@ -10,10 +12,11 @@ public class OnlineGame {
 
     public String gameName;
     public Integer gameID;
-    private String mBoard[];
-    private String playerOnTurn;
+    public List<String> mBoard;
+    public String playerOnTurn;
 
-    private String HUMAN_PLAYER1_ID;
+    public String HUMAN_PLAYER1_ID;
+    public String HUMAN_PLAYER2_ID;
 
     public OnlineGame() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -23,7 +26,8 @@ public class OnlineGame {
         this.gameName = gameName;
         this.gameID = gameID;
         this.HUMAN_PLAYER1_ID = HUMAN_PLAYER1_ID;
-        this.mBoard = new String[]{OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT};
+        this.HUMAN_PLAYER2_ID = "";
+        this.mBoard = Arrays.asList(OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT);
         Random r = new Random();
         int rn = r.nextInt((1 - 0) + 1) + 0;
         if (rn == 1) {

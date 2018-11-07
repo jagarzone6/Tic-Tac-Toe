@@ -110,7 +110,8 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mGame = new TicTacToeGame();
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);        mHumanWins = mPrefs.getInt("mHumanWins", 0);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mHumanWins = mPrefs.getInt("mHumanWins", 0);
         mComputerWins = mPrefs.getInt("mComputerWins", 0);
         mTies = mPrefs.getInt("mTies", 0);
 
