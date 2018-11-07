@@ -1,17 +1,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/new_game"
-    android:title="New Game"
-     />
+    <item
+        android:id="@+id/new_game"
+        android:title="New Game" />
     <item
         android:id="@+id/settings"
         android:title="Settings" />
-    <item android:id="@+id/reset_score"
-        android:title="Reset Scores"
-        />
-    <item android:id="@+id/quit"
-    android:title="Quit"
-    />
-    <item android:id="@+id/about"
-        android:title="About"
-        />
-    </menu>
+    <item
+        android:id="@+id/online"
+        android:title="Play Online" />
+    <item
+        android:id="@+id/reset_score"
+        android:title="Reset Scores" />
+    <item
+        android:id="@+id/quit"
+        android:title="Quit" />
+    <item
+        android:id="@+id/about"
+        android:title="About" />
+</menu>
