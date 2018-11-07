@@ -127,8 +127,7 @@ public class Games_List_Activity extends AppCompatActivity {
     private void attemptCreateNewGame() {
         Log.w("NEW ONLINE GAME", "attemptCreateNewGame:exec");
         Date currentTime = Calendar.getInstance().getTime();
-        Random r = new Random();
-        Integer rn =  r.nextInt(9000000) + 1000000;
+        Integer rn = (int) (currentTime.getTime()/1000);
         OnlineGame newGame = new OnlineGame("New game " + currentTime.toString(), rn, currentUser.getUid());
         DatabaseReference userRef = database.getReference("game");
         userRef.child(rn.toString()).setValue(newGame);
