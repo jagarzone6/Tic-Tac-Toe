@@ -8,12 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 public class OnlineTicTacToeGame extends AppCompatActivity {
     private OnlineBoardView mBoardView;
     private OnlineTicTacToeLogic mGame;
     int pos;
     private SharedPreferences mPrefs;
+    private TextView mInfoTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +30,8 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
         mBoardView.setGame(mGame);
         mBoardView.setOnTouchListener(mTouchListener);
         mBoardView.setColor(mPrefs.getInt("board_color", Color.LTGRAY));
-
+        mInfoTextView = findViewById(R.id.online_information);
+        mInfoTextView.setText("Waiting for Player 2");
     }
 
     // Listen for touches on the board
