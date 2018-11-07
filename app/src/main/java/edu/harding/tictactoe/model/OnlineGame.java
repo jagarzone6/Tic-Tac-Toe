@@ -19,6 +19,7 @@ public class OnlineGame {
     public String HUMAN_PLAYER2_ID;
 
     public Boolean gameOver;
+    public Integer winner;
 
     public OnlineGame() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -31,6 +32,7 @@ public class OnlineGame {
         this.HUMAN_PLAYER2_ID = "";
         this.gameOver = false;
         this.mBoard = Arrays.asList(OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT);
+        this.winner = 0;
         Random r = new Random();
         int rn = r.nextInt((1 - 0) + 1) + 0;
         if (rn == 1) {

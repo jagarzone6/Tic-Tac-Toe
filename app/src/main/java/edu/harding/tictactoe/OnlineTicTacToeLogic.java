@@ -80,50 +80,6 @@ public class OnlineTicTacToeLogic {
         return 1;
     }
 
-    public int getRandomMove(){
-        int move = -1;
-        do {
-            move = mRand.nextInt(BOARD_SIZE);
-        } while (mBoard[move] == HUMAN_PLAYER || mBoard[move] == HUMAN_PLAYER_2);
-
-        System.out.println("Computer is moving to " + (move + 1));
-        mBoard[move] = HUMAN_PLAYER_2;
-        return move;
-    }
-
-    public int getWinningMove(){
-        // First see if there's a move O can make to win
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            if (mBoard[i] != HUMAN_PLAYER && mBoard[i] != HUMAN_PLAYER_2) {
-                char curr = mBoard[i];
-                mBoard[i] = HUMAN_PLAYER_2;
-                if (checkForWinner() == 3) {
-                    System.out.println("Computer is moving to " + (i + 1));
-                    return i;
-                } else
-                    mBoard[i] = curr;
-            }
-        }
-        return -1;
-    }
-
-    public int getBlockingMove(){
-        // See if there's a move O can make to block X from winning
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            if (mBoard[i] != HUMAN_PLAYER && mBoard[i] != HUMAN_PLAYER_2) {
-                char curr = mBoard[i];   // Save the current number
-                mBoard[i] = HUMAN_PLAYER;
-                if (checkForWinner() == 2) {
-                    mBoard[i] = HUMAN_PLAYER_2;
-                    System.out.println("Computer is moving to " + (i + 1));
-                    return i;
-                } else
-                    mBoard[i] = curr;
-            }
-        }
-        return -1;
-    }
-
     /** Clear the board of all X's and O's by setting all spots to OPEN_SPOT. */
     public void clearBoard(){
         mBoard = new char[]{OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT, OPEN_SPOT};

@@ -138,7 +138,9 @@ public class Games_List_Activity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     OnlineGame oGame = postSnapshot.getValue(OnlineGame.class);
+                    if(oGame.gameOver==false){
                     list.add(oGame.gameName);
+                    }
                 }
                 adapter = new StableArrayAdapter(Games_List_Activity.super.getApplicationContext(),
                         R.xml.game_item,R.id.firstLine, list);
