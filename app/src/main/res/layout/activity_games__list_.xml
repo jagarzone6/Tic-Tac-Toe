@@ -33,7 +33,7 @@
                 android:id="@+id/gamelistview"
                 style="?android:textAppearanceButton"
                 android:layout_width="wrap_content"
-                android:layout_height="410dp"
+                android:layout_height="468dp"
                 android:background="@android:color/white"
                 android:textStyle="bold" />
 
