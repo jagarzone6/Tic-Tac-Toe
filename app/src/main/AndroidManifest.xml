@@ -30,9 +30,11 @@
             android:label="Settings" />
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login"></activity>
-        <activity android:name=".Games_List_Activity"
-            android:label="Play Online"></activity>
+            android:label="@string/title_activity_login" />
+        <activity
+            android:name=".Games_List_Activity"
+            android:label="Play Online" />
+        <activity android:name=".OnlineTicTacToeGame"></activity>
     </application>
 
 </manifest>

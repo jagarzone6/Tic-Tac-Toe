@@ -1,6 +1,7 @@
 package edu.harding.tictactoe;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -107,6 +108,8 @@ public class Games_List_Activity extends AppCompatActivity {
                                         view.setAlpha(1);
                                     }
                                 });
+                        startActivityForResult(new Intent(Games_List_Activity.this, OnlineTicTacToeGame.class), 0);
+
                     }
 
                 });
