@@ -52,10 +52,10 @@ public class Games_List_Activity extends AppCompatActivity {
         mNewOnlineGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptCreateNewGame();
                 mNewOnlineGameButton.setEnabled(false);
                 mNewOnlineGameButton.setClickable(false);
                 mNewOnlineGameButton.setBackgroundColor(Color.GRAY);
+                attemptCreateNewGame();
                 Timer buttonTimer = new Timer();
                 buttonTimer.schedule(new TimerTask() {
 
