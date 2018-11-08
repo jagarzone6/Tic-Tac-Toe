@@ -12,8 +12,8 @@
     <edu.harding.tictactoe.OnlineBoardView
         android:id="@+id/online_board"
         android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_marginTop="5dp"/>
+        android:layout_height="275dp"
+        android:layout_marginTop="5dp" />
 
     <TextView
         android:id="@+id/online_information"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:layout_marginTop="10dp"
-        android:textSize="30dp"
+        android:textSize="25dp"
         android:text="Info"
         />
     <TextView

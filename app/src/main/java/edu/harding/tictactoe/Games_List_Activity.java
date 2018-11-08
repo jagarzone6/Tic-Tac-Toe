@@ -138,6 +138,36 @@ public class Games_List_Activity extends AppCompatActivity {
                 // ...
             }
         });
+        ValueEventListener mGameListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+                list.clear();
+                gameItems.clear();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    OnlineGame oGame = postSnapshot.getValue(OnlineGame.class);
+                    if (((oGame.HUMAN_PLAYER1_ID.equals(currentUser.getUid()) || oGame.HUMAN_PLAYER2_ID.equals(currentUser.getUid())) || (oGame.HUMAN_PLAYER1_ID.equals("") || oGame.HUMAN_PLAYER2_ID.equals(""))) && oGame.gameOver.equals(false)) {
+                        list.add(oGame.gameName);
+                        gameItems.put(oGame.gameName,oGame);
+                    }
+                }
+                adapter = new StableArrayAdapter(Games_List_Activity.super.getApplicationContext(),
+                        R.xml.game_item, R.id.firstLine, list);
+                listview.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+                Log.w("UPDATED GAME LIST", "mGameListener");
+
+                    // ...
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w("Getting Ogame failed", "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        };
+        gameRef.addValueEventListener(mGameListener);
 
     }
     @Override
@@ -176,29 +206,6 @@ public class Games_List_Activity extends AppCompatActivity {
         OnlineGame newGame = new OnlineGame("New game " + currentTime.toString(), rn, currentUser.getUid());
         DatabaseReference userRef = database.getReference("game");
         userRef.child(rn.toString()).setValue(newGame);
-        list.clear();
-        gameItems.clear();
-        gameRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    OnlineGame oGame = postSnapshot.getValue(OnlineGame.class);
-                    if (((oGame.HUMAN_PLAYER1_ID.equals(currentUser.getUid()) || oGame.HUMAN_PLAYER2_ID.equals(currentUser.getUid())) || (oGame.HUMAN_PLAYER1_ID.equals("") || oGame.HUMAN_PLAYER2_ID.equals(""))) && oGame.gameOver.equals(false)) {
-                        list.add(oGame.gameName);
-                        gameItems.put(oGame.gameName,oGame);
-                    }
-                }
-                adapter = new StableArrayAdapter(Games_List_Activity.super.getApplicationContext(),
-                        R.xml.game_item, R.id.firstLine, list);
-                listview.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // ...
-            }
-        });
     }
 
     private boolean attemptJoinGame(OnlineGame game) {

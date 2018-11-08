@@ -97,10 +97,10 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
                 if (oGame.playerOnTurn.equals(mySymb)) {
                     mInfoTextView.setText("It's your turn!");
                 } else {
-                    mInfoTextView.setText("Waiting for Player 2 ...");
+                    mInfoTextView.setText("Waiting for Opponent ...");
                 }
                 mPlayerTextView.setText("You play with: " + mySymb);
-                mPlayerTwoTextView.setText("Player 2 ID: " + oGame.HUMAN_PLAYER2_ID);
+                mPlayerTwoTextView.setText("Opponent ID: " + oGame.HUMAN_PLAYER2_ID);
                 mGame.setBoardState(mBoard);
                 mBoardView.invalidate();   // Redraw the board
                 winner = mGame.checkForWinner();
@@ -129,16 +129,22 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
                         }
                     }
                     mGame.setBoardState(charBoard);
+                    oGame.HUMAN_PLAYER1_ID = (String) dataSnapshot.child("HUMAN_PLAYER1_ID").getValue();
                     oGame.playerOnTurn = (String) dataSnapshot.child("playerOnTurn").getValue();
                     oGame.HUMAN_PLAYER2_ID = (String) dataSnapshot.child("HUMAN_PLAYER2_ID").getValue();
-                    mPlayerTwoTextView.setText("Player 2 ID: " + oGame.HUMAN_PLAYER2_ID);
+                    oGame.gameOver = (Boolean) dataSnapshot.child("gameOver").getValue();
 
+                    if(oGame.HUMAN_PLAYER1_ID.equals(currentUser.getUid())) {
+                        mPlayerTwoTextView.setText("Opponent ID: " + oGame.HUMAN_PLAYER2_ID);
+                    }else {
+                        mPlayerTwoTextView.setText("Opponent ID: " + oGame.HUMAN_PLAYER1_ID);
+                    }
                     winner = mGame.checkForWinner();
                     if (winner == 0) {
                         if (oGame.playerOnTurn.equals(mySymb)) {
                             mInfoTextView.setText("It's your turn!");
                         } else {
-                            mInfoTextView.setText("Waiting for Player 2 ...");
+                            mInfoTextView.setText("Waiting for Opponent ...");
                         }
                     } else if (winner == 1) {
                         mInfoTextView.setText("It's a tie!");
@@ -147,14 +153,14 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
                         if (mySymb.equals("X")) {
                             mInfoTextView.setText("You won!");
                         } else {
-                            mInfoTextView.setText("Player 2 won!");
+                            mInfoTextView.setText("Opponent won!");
                         }
                         blockBoard();
                     } else if (winner == 3) {
                         if (mySymb.equals("O")) {
                             mInfoTextView.setText("You won!");
                         } else {
-                            mInfoTextView.setText("Player 2 won!");
+                            mInfoTextView.setText("Opponent won!");
                         }                        blockBoard();
                     }
                     mBoardView.invalidate();
@@ -188,7 +194,7 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
 // If no winner yet, let the computer make a move
                 winner = mGame.checkForWinner();
                 if (winner == 0) {
-                    mInfoTextView.setText("Waiting for Player 2 ...");
+                    mInfoTextView.setText("Waiting for Opponent ...");
                 } else if (winner == 1) {
                     mInfoTextView.setText("It's a tie!");
                     blockBoard();
@@ -196,7 +202,7 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
                     if (mySymb.equals("X")) {
                         mInfoTextView.setText("You won!");
                     } else {
-                        mInfoTextView.setText("Player 2 won!");
+                        mInfoTextView.setText("Opponent won!");
                     }
                     blockBoard();
                     String defaultMessage = getResources().getString(R.string.result_human_wins);
@@ -206,7 +212,7 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
                     if (mySymb.equals("O")) {
                         mInfoTextView.setText("You won!");
                     } else {
-                        mInfoTextView.setText("Player 2 won!");
+                        mInfoTextView.setText("Opponent won!");
                     }
                     blockBoard();
                 }
