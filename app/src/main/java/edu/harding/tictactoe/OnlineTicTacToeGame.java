@@ -20,6 +20,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.List;
+
 import edu.harding.tictactoe.model.OnlineGame;
 
 public class OnlineTicTacToeGame extends AppCompatActivity {
@@ -28,6 +30,7 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
     int pos;
     private SharedPreferences mPrefs;
     private DatabaseReference gameRef;
+    private DatabaseReference boardRef;
     private FirebaseDatabase database;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
@@ -71,37 +74,37 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
-        gameRef = database.getReference("game").child(mPrefs.getString("onlineGameID",""));
+        gameRef = database.getReference("game").child(mPrefs.getString("onlineGameID", ""));
         gameRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                    oGame = dataSnapshot.getValue(OnlineGame.class);
+                oGame = dataSnapshot.getValue(OnlineGame.class);
                 Log.w("CURRENT ONLINE GAME: ", oGame.gameID.toString());
-                char mBoard[] = {oGame.mBoard.get(0).charAt(0),oGame.mBoard.get(1).charAt(0),oGame.mBoard.get(2).charAt(0),oGame.mBoard.get(3).charAt(0),oGame.mBoard.get(4).charAt(0),oGame.mBoard.get(5).charAt(0),oGame.mBoard.get(6).charAt(0),oGame.mBoard.get(7).charAt(0),oGame.mBoard.get(8).charAt(0)};
+                char mBoard[] = {oGame.mBoard.get(0).charAt(0), oGame.mBoard.get(1).charAt(0), oGame.mBoard.get(2).charAt(0), oGame.mBoard.get(3).charAt(0), oGame.mBoard.get(4).charAt(0), oGame.mBoard.get(5).charAt(0), oGame.mBoard.get(6).charAt(0), oGame.mBoard.get(7).charAt(0), oGame.mBoard.get(8).charAt(0)};
                 mBoardButtons = new boolean[mGame.BOARD_SIZE];
-                for (int i = 0; i < 9; i++){
-                    if(mBoard[i]!= ' '){
-                        mBoardButtons[i]=true;
+                for (int i = 0; i < 9; i++) {
+                    if (mBoard[i] != ' ') {
+                        mBoardButtons[i] = true;
                     }
                 }
-                if(currentUser.getUid().equals(oGame.HUMAN_PLAYER1_ID)){
+                if (currentUser.getUid().equals(oGame.HUMAN_PLAYER1_ID)) {
                     mySymb = "O";
                     player2Symb = "X";
                 } else {
                     mySymb = "X";
                     player2Symb = "O";
                 }
-                if(oGame.playerOnTurn.equals(mySymb)){
+                if (oGame.playerOnTurn.equals(mySymb)) {
                     mInfoTextView.setText("It's your turn!");
                 } else {
                     mInfoTextView.setText("Waiting for Player 2 ...");
                 }
-                mPlayerTextView.setText("You play with: "+mySymb);
-                mPlayerTwoTextView.setText("Player 2 ID: "+oGame.HUMAN_PLAYER2_ID);
+                mPlayerTextView.setText("You play with: " + mySymb);
+                mPlayerTwoTextView.setText("Player 2 ID: " + oGame.HUMAN_PLAYER2_ID);
                 mGame.setBoardState(mBoard);
                 mBoardView.invalidate();   // Redraw the board
                 winner = mGame.checkForWinner();
-                if(winner != 0){
+                if (winner != 0) {
                     blockBoard();
                     mInfoTextView.setText("Game Over");
                 }
@@ -112,6 +115,64 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
                 // ...
             }
         });
+
+        ValueEventListener mBoardListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+                if (oGame != null) {
+                    oGame.mBoard = (List<String>) dataSnapshot.child("mBoard").getValue();
+                    char charBoard[] = {oGame.mBoard.get(0).charAt(0), oGame.mBoard.get(1).charAt(0), oGame.mBoard.get(2).charAt(0), oGame.mBoard.get(3).charAt(0), oGame.mBoard.get(4).charAt(0), oGame.mBoard.get(5).charAt(0), oGame.mBoard.get(6).charAt(0), oGame.mBoard.get(7).charAt(0), oGame.mBoard.get(8).charAt(0)};
+                    for (int i = 0; i < 9; i++) {
+                        if (charBoard[i] != ' ') {
+                            mBoardButtons[i] = true;
+                        }
+                    }
+                    mGame.setBoardState(charBoard);
+                    oGame.playerOnTurn = (String) dataSnapshot.child("playerOnTurn").getValue();
+                    oGame.HUMAN_PLAYER2_ID = (String) dataSnapshot.child("HUMAN_PLAYER2_ID").getValue();
+                    mPlayerTwoTextView.setText("Player 2 ID: " + oGame.HUMAN_PLAYER2_ID);
+
+                    winner = mGame.checkForWinner();
+                    if (winner == 0) {
+                        if (oGame.playerOnTurn.equals(mySymb)) {
+                            mInfoTextView.setText("It's your turn!");
+                        } else {
+                            mInfoTextView.setText("Waiting for Player 2 ...");
+                        }
+                    } else if (winner == 1) {
+                        mInfoTextView.setText("It's a tie!");
+                        blockBoard();
+                    } else if (winner == 2) {
+                        if (mySymb.equals("X")) {
+                            mInfoTextView.setText("You won!");
+                        } else {
+                            mInfoTextView.setText("Player 2 won!");
+                        }
+                        blockBoard();
+                    } else if (winner == 3) {
+                        if (mySymb.equals("O")) {
+                            mInfoTextView.setText("You won!");
+                        } else {
+                            mInfoTextView.setText("Player 2 won!");
+                        }                        blockBoard();
+                    }
+                    mBoardView.invalidate();
+                }
+                Log.w("UPDATED mBoard", "mBoardListener");
+
+                // ...
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w("Getting Ogame failed", "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        };
+        boardRef = database.getReference("game").child(mPrefs.getString("onlineGameID", ""));
+        boardRef.addValueEventListener(mBoardListener);
     }
 
     // Listen for touches on the board
@@ -122,25 +183,31 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
             int col = (int) event.getX() / mBoardView.getBoardCellWidth();
             int row = (int) event.getY() / mBoardView.getBoardCellHeight();
             pos = row * 3 + col;
-            if (!mBoardButtons[pos]&&oGame.playerOnTurn.equals(mySymb)) {
+            if (!mBoardButtons[pos] && oGame.playerOnTurn.equals(mySymb)) {
                 setMove(mySymb.charAt(0), pos);
 // If no winner yet, let the computer make a move
                 winner = mGame.checkForWinner();
                 if (winner == 0) {
                     mInfoTextView.setText("Waiting for Player 2 ...");
-                } else if (winner == 1)
-                {mInfoTextView.setText("It's a tie!");
+                } else if (winner == 1) {
+                    mInfoTextView.setText("It's a tie!");
                     blockBoard();
-                }
-                else if (winner == 2){
-                    mInfoTextView.setText("You won!");
+                } else if (winner == 2) {
+                    if (mySymb.equals("X")) {
+                        mInfoTextView.setText("You won!");
+                    } else {
+                        mInfoTextView.setText("Player 2 won!");
+                    }
                     blockBoard();
                     String defaultMessage = getResources().getString(R.string.result_human_wins);
                     mInfoTextView.setText(mPrefs.getString("victory_message", defaultMessage));
 
-                }
-                else if (winner == 3)
-                {mInfoTextView.setText("Android won!");
+                } else if (winner == 3) {
+                    if (mySymb.equals("O")) {
+                        mInfoTextView.setText("You won!");
+                    } else {
+                        mInfoTextView.setText("Player 2 won!");
+                    }
                     blockBoard();
                 }
 
@@ -151,20 +218,22 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
         }
 
     };
-    public void blockBoard(){
-        for(int i = 0; i<mGame.BOARD_SIZE; i++){
-            mBoardButtons[i]=true;
+
+    public void blockBoard() {
+        for (int i = 0; i < mGame.BOARD_SIZE; i++) {
+            mBoardButtons[i] = true;
         }
         DatabaseReference userRef = database.getReference("game");
-        oGame.gameOver= true;
+        oGame.gameOver = true;
         userRef.child(oGame.gameID.toString()).setValue(oGame);
     }
+
     private void setMove(char player, int location) {
-        if(player==mGame.HUMAN_PLAYER){
-            if(mHumanMediaPlayer!= null && mSoundOn == true)
+        if (player == mGame.HUMAN_PLAYER) {
+            if (mHumanMediaPlayer != null && mSoundOn == true)
                 mHumanMediaPlayer.start();    // Play the sound effect
-        }else {
-            if(mComputerMediaPlayer!= null && mSoundOn == true)
+        } else {
+            if (mComputerMediaPlayer != null && mSoundOn == true)
                 mComputerMediaPlayer.start();
         }
         DatabaseReference userRef = database.getReference("game");
@@ -172,7 +241,7 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
         oGame.playerOnTurn = player2Symb;
         userRef.child(oGame.gameID.toString()).setValue(oGame);
         mGame.setMove(player, location);
-        mBoardButtons[location]=true;
+        mBoardButtons[location] = true;
         mBoardView.invalidate();   // Redraw the board
     }
 }
