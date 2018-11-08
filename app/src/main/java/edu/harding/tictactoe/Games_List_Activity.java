@@ -2,8 +2,10 @@ package edu.harding.tictactoe;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,9 +46,11 @@ public class Games_List_Activity extends AppCompatActivity {
     private Button mNewOnlineGameButton;
     private DatabaseReference gameRef;
     private Map gameItems;
+    private SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_games__list_);
         mNewOnlineGameButton = (Button) findViewById(R.id.add_new_online_game);
@@ -115,8 +119,10 @@ public class Games_List_Activity extends AppCompatActivity {
                                     }
                                 });
                         if(attemptJoinGame((OnlineGame) gameItems.get(item))) {
+                            saveOnlineGameInPreferences(((OnlineGame) gameItems.get(item)).gameID.toString());
                             startActivityForResult(new Intent(Games_List_Activity.this, OnlineTicTacToeGame.class), 0);
                         } else if(attemptReJoinGame((OnlineGame) gameItems.get(item))){
+                            saveOnlineGameInPreferences(((OnlineGame) gameItems.get(item)).gameID.toString());
                             startActivityForResult(new Intent(Games_List_Activity.this, OnlineTicTacToeGame.class), 0);
                         }
                     }
@@ -188,6 +194,11 @@ public class Games_List_Activity extends AppCompatActivity {
         }
     }
 
+    private void saveOnlineGameInPreferences(String gameID){
+        SharedPreferences.Editor ed = mPrefs.edit();
+        ed.putString("onlineGameID", gameID);
+        ed.commit();
+    }
     private class StableArrayAdapter extends ArrayAdapter<String> {
 
         HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
