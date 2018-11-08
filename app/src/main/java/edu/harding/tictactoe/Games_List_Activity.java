@@ -121,6 +121,8 @@ public class Games_List_Activity extends AppCompatActivity {
                         if(attemptJoinGame((OnlineGame) gameItems.get(item))) {
                             saveOnlineGameInPreferences(((OnlineGame) gameItems.get(item)).gameID.toString());
                             startActivityForResult(new Intent(Games_List_Activity.this, OnlineTicTacToeGame.class), 0);
+                            list.clear();
+                            gameItems.clear();
                         } else if(attemptReJoinGame((OnlineGame) gameItems.get(item))){
                             saveOnlineGameInPreferences(((OnlineGame) gameItems.get(item)).gameID.toString());
                             startActivityForResult(new Intent(Games_List_Activity.this, OnlineTicTacToeGame.class), 0);
@@ -177,8 +179,7 @@ public class Games_List_Activity extends AppCompatActivity {
             DatabaseReference userRef = database.getReference("game");
             game.HUMAN_PLAYER2_ID = currentUser.getUid();
             userRef.child(game.gameID.toString()).setValue(game);
-            list.clear();
-            gameItems.clear();
+
             return true;
         } else {
             return false;

@@ -6,8 +6,8 @@ import java.util.Random;
 
 public class OnlineGame {
 
-    public static final String HUMAN_PLAYER1 = "X";
-    public static final String HUMAN_PLAYER2 = "O";
+    public static final String HUMAN_PLAYER1 = "O";
+    public static final String HUMAN_PLAYER2 = "X";
     public static final String OPEN_SPOT = " ";
 
     public String gameName;
