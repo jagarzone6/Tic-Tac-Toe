@@ -27,6 +27,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -40,8 +41,9 @@ public class Games_List_Activity extends AppCompatActivity {
     private ListView listview;
     private ArrayList<String> list;
     private StableArrayAdapter adapter;
-    private  Button mNewOnlineGameButton;
+    private Button mNewOnlineGameButton;
     private DatabaseReference gameRef;
+    private Map gameItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,7 @@ public class Games_List_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_games__list_);
         mNewOnlineGameButton = (Button) findViewById(R.id.add_new_online_game);
         listview = (ListView) findViewById(R.id.gamelistview);
-
+        gameItems= new HashMap<String, OnlineGame>();
         mNewOnlineGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,13 +87,17 @@ public class Games_List_Activity extends AppCompatActivity {
         gameRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.e("Count " ,""+dataSnapshot.getChildrenCount());
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-            OnlineGame oGame = postSnapshot.getValue(OnlineGame.class);
-                    list.add(oGame.gameName);
+                Log.e("Count ", "" + dataSnapshot.getChildrenCount());
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    OnlineGame oGame = postSnapshot.getValue(OnlineGame.class);
+                    if (((oGame.HUMAN_PLAYER1_ID.equals(currentUser.getUid()) || oGame.HUMAN_PLAYER2_ID.equals(currentUser.getUid())) || (oGame.HUMAN_PLAYER1_ID.equals("") || oGame.HUMAN_PLAYER2_ID.equals(""))) && oGame.gameOver.equals(false)) {
+                        list.add(oGame.gameName);
+                        gameItems.put(oGame.gameName,oGame);
+                    }
                 }
+
                 adapter = new StableArrayAdapter(Games_List_Activity.super.getApplicationContext(),
-                        R.xml.game_item,R.id.firstLine, list);
+                        R.xml.game_item, R.id.firstLine, list);
                 listview.setAdapter(adapter);
                 listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -108,8 +114,11 @@ public class Games_List_Activity extends AppCompatActivity {
                                         view.setAlpha(1);
                                     }
                                 });
-                        startActivityForResult(new Intent(Games_List_Activity.this, OnlineTicTacToeGame.class), 0);
-
+                        if(attemptJoinGame((OnlineGame) gameItems.get(item))) {
+                            startActivityForResult(new Intent(Games_List_Activity.this, OnlineTicTacToeGame.class), 0);
+                        } else if(attemptReJoinGame((OnlineGame) gameItems.get(item))){
+                            startActivityForResult(new Intent(Games_List_Activity.this, OnlineTicTacToeGame.class), 0);
+                        }
                     }
 
                 });
@@ -127,22 +136,24 @@ public class Games_List_Activity extends AppCompatActivity {
     private void attemptCreateNewGame() {
         Log.w("NEW ONLINE GAME", "attemptCreateNewGame:exec");
         Date currentTime = Calendar.getInstance().getTime();
-        Integer rn = (int) (currentTime.getTime()/1000);
+        Integer rn = (int) (currentTime.getTime() / 1000);
         OnlineGame newGame = new OnlineGame("New game " + currentTime.toString(), rn, currentUser.getUid());
         DatabaseReference userRef = database.getReference("game");
         userRef.child(rn.toString()).setValue(newGame);
         list.clear();
+        gameItems.clear();
         gameRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     OnlineGame oGame = postSnapshot.getValue(OnlineGame.class);
-                    if(oGame.gameOver==false){
-                    list.add(oGame.gameName);
+                    if (((oGame.HUMAN_PLAYER1_ID.equals(currentUser.getUid()) || oGame.HUMAN_PLAYER2_ID.equals(currentUser.getUid())) || (oGame.HUMAN_PLAYER1_ID.equals("") || oGame.HUMAN_PLAYER2_ID.equals(""))) && oGame.gameOver.equals(false)) {
+                        list.add(oGame.gameName);
+                        gameItems.put(oGame.gameName,oGame);
                     }
                 }
                 adapter = new StableArrayAdapter(Games_List_Activity.super.getApplicationContext(),
-                        R.xml.game_item,R.id.firstLine, list);
+                        R.xml.game_item, R.id.firstLine, list);
                 listview.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }
@@ -154,6 +165,29 @@ public class Games_List_Activity extends AppCompatActivity {
         });
     }
 
+    private boolean attemptJoinGame(OnlineGame game) {
+        if (!game.HUMAN_PLAYER1_ID.equals(currentUser.getUid()) && (game.HUMAN_PLAYER2_ID.equals("")) && (!game.HUMAN_PLAYER2_ID.equals(currentUser.getUid()))) {
+            Log.w("JOINING ONLINE GAME", "attemptJoinGame:exec");
+            DatabaseReference userRef = database.getReference("game");
+            game.HUMAN_PLAYER2_ID = currentUser.getUid();
+            userRef.child(game.gameID.toString()).setValue(game);
+            list.clear();
+            gameItems.clear();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean attemptReJoinGame(OnlineGame game) {
+        if ((game.HUMAN_PLAYER1_ID.equals(currentUser.getUid()) || game.HUMAN_PLAYER2_ID.equals(currentUser.getUid()))) {
+            Log.w("Re-JOINING ONLINE GAME", "attemptJoinGame:exec");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private class StableArrayAdapter extends ArrayAdapter<String> {
 
         HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
@@ -161,7 +195,7 @@ public class Games_List_Activity extends AppCompatActivity {
         public StableArrayAdapter(Context context, int textViewResourceId,
                                   int textViewResourceId2,
                                   List<String> objects) {
-            super(context, textViewResourceId, textViewResourceId2 ,objects);
+            super(context, textViewResourceId, textViewResourceId2, objects);
             for (int i = 0; i < objects.size(); ++i) {
                 mIdMap.put(objects.get(i), i);
             }

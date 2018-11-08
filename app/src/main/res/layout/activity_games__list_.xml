@@ -21,7 +21,7 @@
             <Button
                 android:id="@+id/add_new_online_game"
                 style="?android:textAppearanceButton"
-                android:background="@android:color/holo_green_dark"
+                android:background="@android:color/holo_green_light"
                 android:textColor="@android:color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
