@@ -27,7 +27,6 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
     private OnlineTicTacToeLogic mGame;
     int pos;
     private SharedPreferences mPrefs;
-    private TextView mInfoTextView;
     private DatabaseReference gameRef;
     private FirebaseDatabase database;
     private FirebaseAuth mAuth;
@@ -40,6 +39,10 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
     int winner;
     private String mySymb;
     private String player2Symb;
+
+    private TextView mInfoTextView;
+    private TextView mPlayerTextView;
+    private TextView mPlayerTwoTextView;
 
     @Override
     protected void onResume() {
@@ -61,6 +64,8 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
         mBoardView.setOnTouchListener(mTouchListener);
         mBoardView.setColor(mPrefs.getInt("board_color", Color.LTGRAY));
         mInfoTextView = findViewById(R.id.online_information);
+        mPlayerTextView = findViewById(R.id.online_player_2);
+        mPlayerTwoTextView = findViewById(R.id.online_player_1);
 
         database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -91,7 +96,8 @@ public class OnlineTicTacToeGame extends AppCompatActivity {
                 } else {
                     mInfoTextView.setText("Waiting for Player 2 ...");
                 }
-
+                mPlayerTextView.setText("You play with: "+mySymb);
+                mPlayerTwoTextView.setText("Player 2 ID: "+oGame.HUMAN_PLAYER2_ID);
                 mGame.setBoardState(mBoard);
                 mBoardView.invalidate();   // Redraw the board
                 winner = mGame.checkForWinner();

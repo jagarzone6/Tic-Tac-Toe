@@ -38,8 +38,8 @@ public class OnlineBoardView extends View {
     }
 
     public void initialize() {
-        mHumanBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.circle);
-        mComputerBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.x);
+        mHumanBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.x);
+        mComputerBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.circle);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         boardColor = Color.LTGRAY;
     }
